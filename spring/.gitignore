@@ -1,6 +1,3 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-
 ### public folder is from external SPA ###
 src/main/resources/public
 

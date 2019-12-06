@@ -1,0 +1,70 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id "com.github.node-gradle.node" version "2.1.1"
+    id "base"
+}
+
+wrapper.gradleVersion = "5.6.2"
+
+subprojects {
+    group = "com.example"
+    version = "1.0.0"
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+configurations {
+    spring {
+        transitive = false
+    }
+}
+
+dependencies {
+    spring project(path: ":spring", configuration: "dist")
+}
+
+node {
+    version = "12.13.0"
+    download = "true"
+}
+
+tasks.named("npm_install").configure {
+	inputs.file "package.json"
+	inputs.file "package-lock.json"
+
+	outputs.dir "node_modules"
+}
+
+tasks.register("copySpring", Sync) {
+    from configurations.spring
+    into "${buildDir}/tmp"
+}
+
+tasks.register("npmBuild", NpmTask) {
+	dependsOn "npm_install", "copySpring"
+	inputs.files fileTree("public")
+	inputs.files fileTree("src")
+	inputs.file "package.json"
+	inputs.file "package-lock.json"
+
+	outputs.dir "dist"
+	
+	args = ["run", "build"]
+}
+
+clean {
+    doFirst {
+	    delete "${projectDir}/dist"
+    }
+}
+
+assemble {
+    dependsOn "npmBuild"
+}

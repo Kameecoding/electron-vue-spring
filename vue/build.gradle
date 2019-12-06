@@ -1,0 +1,64 @@
+plugins {
+    id "com.github.node-gradle.node"
+    id "base"
+}
+
+node {
+    version = "12.13.0"
+    download = "true"
+}
+
+configurations {
+    dist
+}
+
+tasks.register("dev", NpmTask) {
+	dependsOn "npm_install"
+	args = ["run", "serve", "--", "--port", "8088"]
+}
+
+tasks.named("npm_install").configure {
+	inputs.file "package.json"
+	inputs.file "package-lock.json"
+
+	outputs.dir "node_modules"
+}
+
+tasks.register("test", NpmTask) {
+	dependsOn "npm_install"
+
+	args = ["run", "test:unit"]
+}
+
+// check {
+//     dependsOn "test"
+// }
+
+tasks.register("npmBuild", NpmTask) {
+	dependsOn "npm_install"
+	inputs.files fileTree("public")
+	inputs.files fileTree("src")
+	inputs.file "package.json"
+	inputs.file "package-lock.json"
+
+	outputs.dir "dist"
+	
+	args = ["run", "build"]
+}
+
+def distDir = "${projectDir}/build/dist"
+tasks.register("createDist", Sync) {
+	dependsOn tasks.named("npmBuild")
+	from "${projectDir}/dist"
+	into distDir
+}
+
+clean {
+	delete "${projectDir}/dist"
+}
+
+artifacts {
+	dist(file(distDir)) {
+		builtBy createDist
+	}
+}

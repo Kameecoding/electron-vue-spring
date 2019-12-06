@@ -4,7 +4,7 @@ shell.echo('##########################')
 shell.echo('#    Building electron   #')
 shell.echo('##########################')
 
-if (!shell.test('-e', 'spring/target')) {
+if (!shell.test('-e', 'spring/build')) {
   shell.echo('Error: server is not built yet.')
   shell.exit(1)
 }
