@@ -1,4 +1,4 @@
-# Electron-Vue-Spring
+# Electron-Vue-Spring-Gradle-jUnit5
 
 > An opionated desktop application with web front-end and Java backend.
 
