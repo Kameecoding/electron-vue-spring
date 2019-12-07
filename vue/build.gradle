@@ -14,7 +14,7 @@ configurations {
 
 tasks.register("dev", NpmTask) {
 	dependsOn "npm_install"
-	args = ["run", "serve", "--", "--port", "8088"]
+	args = ["run", "serve", "--", "--port", "9000"]
 }
 
 tasks.named("npm_install").configure {
