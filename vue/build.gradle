@@ -30,9 +30,9 @@ tasks.register("test", NpmTask) {
 	args = ["run", "test:unit"]
 }
 
-// check {
-//     dependsOn "test"
-// }
+check {
+    dependsOn "test"
+}
 
 tasks.register("npmBuild", NpmTask) {
 	dependsOn "npm_install"
